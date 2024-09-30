@@ -16,6 +16,7 @@ export const users = pgTable(
     id: serial("id").primaryKey(),
     username: text("username").notNull().unique(),
     email: text("email").notNull(),
+    password: text("password").notNull(),
     isVerified: boolean("isVerified").notNull().default(false),
     verifyCode: text("verifyCode"),
     verifyExpiry: timestamp("verifyExpiry"),
