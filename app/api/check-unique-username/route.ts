@@ -4,6 +4,8 @@ import { z } from "zod";
 import { usernameValidation } from "@/validation/signUpValidation";
 import { and, eq } from "drizzle-orm";
 
+export const dynamic = "force-dynamic";
+
 const usernameQuerySchema = z.object({
   username: usernameValidation,
 });
