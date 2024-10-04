@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/options";
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { users } from "@/db/schema";
 import { db } from "@/db";
 import { User } from "next-auth";
@@ -21,7 +21,7 @@ export async function POST(request: Request) {
   try {
     const updatedUser = await db.query.users.findFirst({
       where: and(
-        eq(users.id, userId),
+        eq(users.id, Number(userId)),
         eq(users.isAcceptingMessage, acceptMessages)
       ),
     });
@@ -69,7 +69,7 @@ export async function GET(request: Request) {
 
   try {
     const foundUser = await db.query.users.findFirst({
-      where: eq(users.id, userId),
+      where: eq(users.id, Number(userId)),
     });
 
     if (!foundUser) {
