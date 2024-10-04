@@ -19,14 +19,13 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials: any): Promise<any> {
         try {
-          const user = await db
-  .query.users // Use the `query` object for Drizzle ORM
-  .findFirst({  // `findFirst` fetches the first matching record
-    where: or(
-      eq(users.email, credentials.identifier),
-      eq(users.username, credentials.identifier)
-    ),
-  });
+          const user = await db.query.users // Use the `query` object for Drizzle ORM
+            .findFirst({
+              where: or(
+                eq(users.email, credentials.identifier),
+                eq(users.username, credentials.identifier)
+              ),
+            });
 
           if (!user) {
             throw new Error("No user found with this credentials");
