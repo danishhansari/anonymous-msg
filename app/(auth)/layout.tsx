@@ -1,6 +1,6 @@
 export const metadata = {
   title: "Authenticated",
-  description: "",
+  description: "Let ",
 };
 
 export default function RootLayout({
