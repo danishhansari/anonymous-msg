@@ -32,6 +32,7 @@ export const lower = (email: AnyPgColumn): SQL => {
 };
 
 export const message = pgTable("message", {
+  id: serial("id").primaryKey(),
   content: text("content").notNull(),
   createdAt: timestamp("createdAt").notNull().defaultNow(),
   userId: integer("userId").notNull(),

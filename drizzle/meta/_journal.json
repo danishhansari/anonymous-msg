@@ -15,6 +15,13 @@
       "when": 1727684908396,
       "tag": "0001_absent_skin",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1728269042626,
+      "tag": "0002_abandoned_colossus",
+      "breakpoints": true
     }
   ]
 }
