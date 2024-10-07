@@ -5,17 +5,19 @@ import { db } from "@/db";
 import { users } from "@/db/schema";
 import { eq, or } from "drizzle-orm";
 
+interface Credentials {
+  identifier: string;
+  password: string;
+}
+
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       id: "credentials",
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "text" },
-        password: {
-          label: "Password",
-          type: "password",
-        },
+        identifier: { label: "Email or Username", type: "text" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials: any): Promise<any> {
         try {
@@ -27,11 +29,11 @@ export const authOptions: NextAuthOptions = {
           });
 
           if (!user) {
-            throw new Error("No user found with this credentials");
+            throw new Error("No user found with these credentials");
           }
 
           if (!user.isVerified) {
-            throw new Error("Verify your account first");
+            throw new Error("Please verify your account first");
           }
 
           const isPasswordCorrect = await bcrypt.compare(
@@ -45,7 +47,8 @@ export const authOptions: NextAuthOptions = {
             throw new Error("Password is incorrect");
           }
         } catch (error: any) {
-          throw new Error(error);
+          console.error("Authorization error:", error);
+          throw new Error("Authentication failed. Please try again.");
         }
       },
     }),

@@ -18,6 +18,7 @@ export async function POST(request: Request) {
   const userId = user.id;
   const { acceptMessages } = await request.json();
 
+  console.log(acceptMessages);
   try {
     const updatedUser = await db.query.users.findFirst({
       where: and(
@@ -58,24 +59,25 @@ export async function POST(request: Request) {
 export async function GET(request: Request) {
   const session = await getServerSession(authOptions);
   const user: User = session?.user as User;
+
   if (!session || !user) {
     return Response.json(
-      { success: false, message: "User is not Authenticated " },
+      { success: false, message: "User is not authenticated" },
       { status: 401 }
     );
   }
 
-  const userId = user.id;
+  const userId = Number(user.id);
 
   try {
     const foundUser = await db.query.users.findFirst({
-      where: eq(users.id, Number(userId)),
+      where: eq(users.id, userId),
     });
 
     if (!foundUser) {
       return Response.json(
         { success: false, message: "User not found" },
-        { status: 400 }
+        { status: 404 } // Changed to 404
       );
     }
 
@@ -87,10 +89,10 @@ export async function GET(request: Request) {
       { status: 200 }
     );
   } catch (error) {
-    console.error(error);
+    console.error("Error while finding user:", error);
     return Response.json(
       { success: false, message: "Error while finding user" },
-      { status: 400 }
+      { status: 500 } // Consider using 500 for server errors
     );
   }
 }

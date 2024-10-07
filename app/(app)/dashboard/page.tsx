@@ -22,7 +22,7 @@ export default function Home() {
   const { toast } = useToast();
 
   const handleDeleteMessage = (messageId: string) => {
-    setMessages(messages.filter((message) => message.id !== messageId));
+    setMessages(messages.filter((message: any) => message.id !== messageId));
   };
 
   const { data: session } = useSession();
@@ -115,6 +115,7 @@ export default function Home() {
   const baseURL = `${window.location.protocol}//${window.location.host}`;
   const profileURL = `${baseURL}/u/${username}`;
 
+  console.log(messages);
   const copyToClipboard = () => {
     navigator.clipboard.writeText(profileURL);
     toast({
@@ -122,7 +123,6 @@ export default function Home() {
       description: "Profile has been copied to clipboard",
     });
   };
-
   return (
     <div className='my-8 mx-4 md:mx-8 ld:mx-auto p-6 bg-white rounded w-full max-w-6xl'>
       <h1 className='text-4xl font-bold mb-4'>User Dashboard</h1>
@@ -144,7 +144,7 @@ export default function Home() {
         <Switch
           {...register("acceptMessages")}
           checked={acceptMessages}
-          onCheckedChange={handleSwitchChange}
+          onCheckedChange={() => handleSwitchChange()}
           disabled={isSwitchLoading}
         />
         <span>Accept Messages: {acceptMessages ? "On" : "Off"}</span>
@@ -167,7 +167,7 @@ export default function Home() {
 
       <div className='mt-4 grid grid-cols-1 md:grid-cols-2'>
         {messages.length > 0 ? (
-          messages.map((message, index) => (
+          messages.map((message: any, index) => (
             <MessageCard
               key={message.id}
               message={message}

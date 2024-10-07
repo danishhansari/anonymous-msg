@@ -26,6 +26,7 @@ import { ApiResponse } from "@/types/ApiResponse";
 type MessageCartProps = {
   message: {
     id: string;
+    content: string;
   };
   onMessageDelete: (messageId: string) => void;
 };
@@ -44,13 +45,10 @@ const messageCard = ({ message, onMessageDelete }: MessageCartProps) => {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Card Title</CardTitle>
+      <div className='relative top-0 left-0'>
         <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant='destructive'>
-              <X className='w-5 h-5' />
-            </Button>
+          <AlertDialogTrigger className='w-8' asChild>
+            <X className='w-4' />
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
@@ -68,11 +66,11 @@ const messageCard = ({ message, onMessageDelete }: MessageCartProps) => {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+      </div>
+      <CardHeader>
         <CardDescription>Card Description</CardDescription>
       </CardHeader>
-      <CardContent>
-        <p>Card Content</p>
-      </CardContent>
+      <CardContent>{message.content}</CardContent>
     </Card>
   );
 };
