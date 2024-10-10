@@ -2,20 +2,36 @@
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 
 const page = () => {
   const { username } = useParams();
-  const [message, setMessage] = useState("Hi there");
+  const [message, setMessage] = useState("");
+  const { toast } = useToast();
 
   const sendMessages = async () => {
-    const response = await axios.post(`/api/send-message`, {
-      username,
-      content: message,
-    });
-    console.log(response);
+    try {
+      const response = await axios.post(`/api/send-message`, {
+        username,
+        content: message,
+      });
+      toast({
+        title: "Message sent successfully",
+        description: "message sent",
+      });
+      setMessage("");
+      console.log(response);
+    } catch (err: any) {
+      console.log(err);
+      toast({
+        title: "Error",
+        description: err.response.data.message,
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -27,7 +43,12 @@ const page = () => {
         <Label htmlFor='message-2'>
           Send messages anonymously to @{username}
         </Label>
-        <Textarea placeholder='Type your message here.' id='message-2' />
+        <Textarea
+          placeholder='Type your message here.'
+          id='message-2'
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+        />
         <p className='text-sm text-muted-foreground'>
           Your message will be anonymous, Only you and receiver know about it.
         </p>

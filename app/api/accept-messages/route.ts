@@ -3,7 +3,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { users } from "@/db/schema";
 import { db } from "@/db";
 import { User } from "next-auth";
-import { and, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
 export async function POST(request: Request) {
   const session = await getServerSession(authOptions);
@@ -20,12 +20,10 @@ export async function POST(request: Request) {
 
   console.log(acceptMessages);
   try {
-    const updatedUser = await db.query.users.findFirst({
-      where: and(
-        eq(users.id, Number(userId)),
-        eq(users.isAcceptingMessage, acceptMessages)
-      ),
-    });
+    const updatedUser = await db
+      .update(users)
+      .set({ isAcceptingMessage: acceptMessages })
+      .where(eq(users.id, Number(userId)));
 
     if (!updatedUser) {
       return Response.json(
@@ -57,9 +55,11 @@ export async function POST(request: Request) {
 }
 
 export async function GET(request: Request) {
+  // Attempt to get the user session
   const session = await getServerSession(authOptions);
   const user: User = session?.user as User;
 
+  // Check if the session or user exists
   if (!session || !user) {
     return Response.json(
       { success: false, message: "User is not authenticated" },
@@ -69,18 +69,22 @@ export async function GET(request: Request) {
 
   const userId = Number(user.id);
 
+  console.log("I am userId", userId);
   try {
+    // Fetch the user from the database
     const foundUser = await db.query.users.findFirst({
       where: eq(users.id, userId),
     });
 
+    // If the user is not found, return a 404 error
     if (!foundUser) {
       return Response.json(
         { success: false, message: "User not found" },
-        { status: 404 } // Changed to 404
+        { status: 404 }
       );
     }
 
+    // Return the user's message acceptance status
     return Response.json(
       {
         success: true,
@@ -89,10 +93,11 @@ export async function GET(request: Request) {
       { status: 200 }
     );
   } catch (error) {
+    // Log the error and return a server error response
     console.error("Error while finding user:", error);
     return Response.json(
       { success: false, message: "Error while finding user" },
-      { status: 500 } // Consider using 500 for server errors
+      { status: 500 }
     );
   }
 }
